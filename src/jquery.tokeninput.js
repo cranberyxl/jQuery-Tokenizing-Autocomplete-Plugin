@@ -364,6 +364,11 @@ $.TokenList = function (input, settings) {
                 hide_dropdown();
 
                 update_hidden_input();
+
+                // respect tokenLimit with prePopulate
+                if(settings.tokenLimit != null && token_count >= settings.tokenLimit) {
+                    input_box.hide();
+                }
             }
         }
     }
@@ -566,7 +571,7 @@ $.TokenList = function (input, settings) {
         
         update_hidden_input();
         
-        if (settings.tokenLimit != null) {
+        if (settings.tokenLimit != null && token_count < settings.tokenLimit) {
             input_box
                 .show()
                 .val("")
