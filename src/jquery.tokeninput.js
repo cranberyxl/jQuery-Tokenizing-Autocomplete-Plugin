@@ -603,17 +603,24 @@ $.TokenList = function (input, settings) {
         selected_dropdown_item = null;
     }
 
+    function show_dropdown () {
+        dropdown.show().position({
+            my: "left top",
+            at: "left bottom",
+            of: token_list,
+            collision: "none"
+        });
+    }
+
     function show_dropdown_searching () {
         hide_dropdown();
-        dropdown
-            .html("<p>"+settings.searchingText+"</p>")
-            .show();
+        dropdown.html("<p>"+settings.searchingText+"</p>");
+        show_dropdown();
     }
 
     function show_dropdown_hint () {
-        dropdown
-            .html("<p>"+settings.hintText+"</p>")
-            .show();
+        dropdown.html("<p>"+settings.hintText+"</p>");
+        show_dropdown();
     }
 
     // Highlight the query part of the search term
@@ -655,7 +662,7 @@ $.TokenList = function (input, settings) {
                 }
             }
 
-            dropdown.show();
+            show_dropdown();
             if (settings.animateDropdown)
               dropdown_ul.slideDown("fast");
             else
@@ -663,8 +670,10 @@ $.TokenList = function (input, settings) {
 
         } else {
             hide_dropdown();
-            if (settings.noResultsText)
-              dropdown.html("<p>"+settings.noResultsText+"</p>").show();
+            if (settings.noResultsText) {
+                dropdown.html("<p>"+settings.noResultsText+"</p>");
+                show_dropdown();
+            }
         }
     }
 
