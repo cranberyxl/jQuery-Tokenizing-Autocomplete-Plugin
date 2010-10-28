@@ -362,9 +362,7 @@ $.TokenList = function (input, settings) {
                 // Don't show the help dropdown, they've got the idea
                 hide_dropdown();
 
-                // Save this token id
-                var id_string = li_data[i].id + ","
-                hidden_input.val(hidden_input.val() + id_string);
+                update_hidden_input();
             }
         }
     }
@@ -481,11 +479,7 @@ $.TokenList = function (input, settings) {
         // Don't show the help dropdown, they've got the idea
         hide_dropdown();
 
-        // Save this token id
-        var id_string = li_data.id + ","
-        hidden_input.val(hidden_input.val() + id_string);
-        
-        token_count++;
+        update_hidden_input();
         
         if(settings.tokenLimit != null && token_count >= settings.tokenLimit) {
             input_box.hide();
@@ -510,11 +504,7 @@ $.TokenList = function (input, settings) {
         // Don't show the help dropdown, they've got the idea
         hide_dropdown();
 
-        // Save this token id
-        var id_string = label + ","
-        hidden_input.val(hidden_input.val() + id_string);
-        
-        token_count++;
+        update_hidden_input();
         
         if(settings.tokenLimit != null && token_count >= settings.tokenLimit) {
             input_box.hide();
@@ -566,28 +556,14 @@ $.TokenList = function (input, settings) {
 
     // Delete a token from the token list
     function delete_token (token) {
-        // Remove the id from the saved list
-        var token_data = $.data(token.get(0), "tokeninput");
-
         // Delete the token
         token.remove();
         selected_token = null;
 
         // Show the input box and give it focus again
         input_box.focus();
-
-        // Delete this token's id from hidden input
-        var str = hidden_input.val()
-        var start = str.indexOf(token_data.id+",");
-        var end = str.indexOf(",", start) + 1;
-
-        if(end >= str.length) {
-            hidden_input.val(str.slice(0, start));
-        } else {
-            hidden_input.val(str.slice(0, start) + str.slice(end, str.length));
-        }
         
-        token_count--;
+        update_hidden_input();
         
         if (settings.tokenLimit != null) {
             input_box
@@ -595,6 +571,21 @@ $.TokenList = function (input, settings) {
                 .val("")
                 .focus();
         }
+    }
+
+    // update the value of the hidden tags and the token_count
+    function update_hidden_input () {
+        var token_ids = [];
+
+        var tokens = token_list.children('li.' + settings.classes.token);
+
+        tokens.each(function() {
+            token_ids.push($.data(this, "tokeninput").id);
+        });
+
+        token_count = tokens.length;
+
+        hidden_input.val(token_ids.join(','));
     }
 
     // Hide and clear the results dropdown
