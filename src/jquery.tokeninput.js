@@ -487,7 +487,7 @@ $.TokenList = function (input, settings) {
         
         token_count++;
         
-        if(settings.tokenLimit != null && settings.tokenLimit >= token_count) {
+        if(settings.tokenLimit != null && token_count >= settings.tokenLimit) {
             input_box.hide();
             hide_dropdown();
         }
@@ -516,7 +516,7 @@ $.TokenList = function (input, settings) {
         
         token_count++;
         
-        if(settings.tokenLimit != null && settings.tokenLimit >= token_count) {
+        if(settings.tokenLimit != null && token_count >= settings.tokenLimit) {
             input_box.hide();
             hide_dropdown();
         }
