@@ -34,7 +34,8 @@ $.fn.tokenInput = function (url, options) {
         defaultSuggestTagSize: 14,
         defaultSuggestTagSizeUnit: 'px',
         afterAdd: function() {},
-        useClientSideSearch: false
+        useClientSideSearch: false,
+        tokenDelimiter: ','
     }, options);
 
     settings.classes = $.extend({
@@ -326,7 +327,7 @@ $.TokenList = function (input, settings) {
         if(li_data && !li_data.length) {
 
             //convert tag string into tag array that the tokenizer can consume
-            var rawTags = $(token_element).val().split(',');
+            var rawTags = $(token_element).val().split(settings.tokenDelimiter);
             //[{"id":"856","name":"House"},]
             var tags = [];
             for(var i=0, len = rawTags.length; i < len; i++) {
@@ -585,7 +586,7 @@ $.TokenList = function (input, settings) {
 
         token_count = tokens.length;
 
-        hidden_input.val(token_ids.join(','));
+        hidden_input.val(token_ids.join(settings.tokenDelimiter));
     }
 
     // Hide and clear the results dropdown
