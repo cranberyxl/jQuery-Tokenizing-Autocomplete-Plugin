@@ -5,7 +5,7 @@
  * Copyright (c) 2009 James Smith (http://loopj.com)
  * Licensed jointly under the GPL and MIT licenses,
  * choose which one suits your project best!
- *	
+ *
  * TH - 2010-08-23 - Added ability to have arbitary tags that don't require a match from the list. 
  * Added requiresMatch options to suppor this. Defaults to original Tokenizing Autocomplete functionality.
  * Also added focusHint so it doesn't always show hint when focusing the input. Again, defaults to orignal functionality.
@@ -27,8 +27,8 @@ $.fn.tokenInput = function (url, options) {
         contentType: "json",
         queryParam: "q",
         onResult: null,
-        focusHint: true,		//Added TH - determines if drop-down hint should be shown on input focus.
-        requireMatch: true,		//Added TH - determines if a user should be able to add new tags or must match a selection.
+        focusHint: true,        //Added TH - determines if drop-down hint should be shown on input focus.
+        requireMatch: true,     //Added TH - determines if a user should be able to add new tags or must match a selection.
         animateDropdown: true,
         suggestedTagsText: "Suggested tags:",
         defaultSuggestTagSize: 14,
@@ -101,7 +101,7 @@ $.TokenList = function (input, settings) {
     var input_box = $("<input autocomplete=\"off\" type=\"text\">")
         .attr('id', $(input).attr('id')+'Dynamic')
         .attr('name', $(input).attr('id')+'Dynamic')
-    	.css({
+        .css({
             outline: "none"
         })
         .focus(function () {
@@ -112,7 +112,7 @@ $.TokenList = function (input, settings) {
             if (settings.useClientSideSearch && !client_side_data) {
               client_side_data = [];
               var http_method = settings.method.toLowerCase();
-        		  $[http_method](settings.url, {}, prepare_client_side_data, settings.contentType);
+                  $[http_method](settings.url, {}, prepare_client_side_data, settings.contentType);
             }
         })
         .blur(function () {
@@ -149,9 +149,9 @@ $.TokenList = function (input, settings) {
                         var dropdown_item = null;
 
                         if(!selected_dropdown_item) {
-                        	dropdown_item = $('li:first', dropdown);
+                            dropdown_item = $('li:first', dropdown);
                         } else {
-                        	if(event.keyCode == KEY.DOWN || event.keyCode == KEY.RIGHT) {
+                            if(event.keyCode == KEY.DOWN || event.keyCode == KEY.RIGHT) {
                                 dropdown_item = $(selected_dropdown_item).next();
                             } else {
                                 dropdown_item = $(selected_dropdown_item).prev();
@@ -188,21 +188,21 @@ $.TokenList = function (input, settings) {
                 case KEY.TAB:
                 case KEY.RETURN:
                 case KEY.COMMA:
-          
-                	// Submit form if user hits return a second time
-            		if(event.keyCode == KEY.RETURN && $(this).val() == "") {
-        				parentForm[0].submit();
-    					return false;
-            		}
-          
-					if(selected_dropdown_item) {
-						add_existing_token($(selected_dropdown_item));
-					} else if(!settings.requireMatch) {
-						add_new_token($(this).val());
-					}
-					
-					return false;
-					break;
+
+                    // Submit form if user hits return a second time
+                    if(event.keyCode == KEY.RETURN && $(this).val() == "") {
+                        parentForm[0].submit();
+                        return false;
+                    }
+
+                    if(selected_dropdown_item) {
+                        add_existing_token($(selected_dropdown_item));
+                    } else if(!settings.requireMatch) {
+                        add_new_token($(this).val());
+                    }
+
+                    return false;
+                    break;
 
                 case KEY.ESC:
                   hide_dropdown();
@@ -231,9 +231,9 @@ $.TokenList = function (input, settings) {
     // Collect the stray arbitrary tags before the parent form submits
     var parentForm = hidden_input.parents('form')
                         .submit(function(){
-                        	if(!settings.requireMatch && input_box.val()!=$('label[for=' + input_box.attr('id') + ']').text()) {
-                        		add_new_token(input_box.val());
-                        	}
+                            if(!settings.requireMatch && input_box.val()!=$('label[for=' + input_box.attr('id') + ']').text()) {
+                                add_new_token(input_box.val());
+                            }
                         });
     
     // Keep a reference to the selected token and dropdown item
@@ -293,24 +293,24 @@ $.TokenList = function (input, settings) {
     init_list(hidden_input);
     
     suggestedTags = settings.suggestedTags;
-	if(suggestedTags && suggestedTags.length) {
-		
-	    var suggested_tags_container = $('<div />')
-			.addClass(settings.classes.suggestedTags)
-			.insertAfter(dropdown);
-	
-		var suggested_tags_label = $('<p />')
-			.appendTo(suggested_tags_container)	
-			.text(settings.suggestedTagsText);
-		
-		var suggested_tags = $("<ul />")
-			.appendTo(suggested_tags_container);
+    if(suggestedTags && suggestedTags.length) {
 
-		
-	    init_suggestedTags();
-	
-	}
-	
+        var suggested_tags_container = $('<div />')
+            .addClass(settings.classes.suggestedTags)
+            .insertAfter(dropdown);
+
+        var suggested_tags_label = $('<p />')
+            .appendTo(suggested_tags_container)
+            .text(settings.suggestedTagsText);
+
+        var suggested_tags = $("<ul />")
+            .appendTo(suggested_tags_container);
+
+
+        init_suggestedTags();
+
+    }
+
     //
     // Functions
     //
@@ -319,19 +319,19 @@ $.TokenList = function (input, settings) {
     // Pre-populate list if items exist
     function init_list (token_element) {
         
-    	li_data = settings.prePopulate;
+        li_data = settings.prePopulate;
 
         //TH - If prepopulate was passed in as true and not an array of tags, just build the array from existing field value.
-    	//This could do with being improved because it just uses the value as both the name and the id.
+        //This could do with being improved because it just uses the value as both the name and the id.
         if(li_data && !li_data.length) {
 
-        	//convert tag string into tag array that the tokenizer can consume
+            //convert tag string into tag array that the tokenizer can consume
             var rawTags = $(token_element).val().split(',');
             //[{"id":"856","name":"House"},]
             var tags = [];
             for(var i=0, len = rawTags.length; i < len; i++) {
-        		var tag = rawTags[i];
-        		if (tag.length) tags[i] = {id: tag, name: tag};
+                var tag = rawTags[i];
+                if (tag.length) tags[i] = {id: tag, name: tag};
             }
             //clear the text
             $(token_element).attr('value', '');
@@ -373,47 +373,47 @@ $.TokenList = function (input, settings) {
      * TH - Adds suggested tags cloud
      */
     function init_suggestedTags() {
-    	
-    	li_data = settings.suggestedTags;
-    	if(li_data && li_data.length) {
-	    	
-    		for(var i in li_data) {
-	    		
-    			suggestedTag = li_data[i].name;
-    			if($('li p', token_list).filter(":contains('" + suggestedTag + "')").length==0) {
-    			
-		    		/*size adjust will increase/decrease tag size*/
-		    		var sizeAdjust = 0;
-		    		if(typeof(li_data[i].size) != 'undefined') {
-		    			sizeAdjust = li_data[i].size;
-		    		}
-		    		
-		    		var this_token = $('<li><a href="#" style="font-size: ' + (settings.defaultSuggestTagSize+sizeAdjust) + settings.defaultSuggestTagSizeUnit + '">'+suggestedTag+'</a></li>')
-	                .addClass(settings.classes.suggestedTag)
-	                .appendTo(suggested_tags)
-	                .click(function() {
 
-	        			var li = this;
-	        			add_new_token($('a', li).text());
-	        			$(li).remove();
-	        			
-	        			//Should the whole ul be removed?
-	        			if($('li',suggested_tags).length==0) {
-	        				$(suggested_tags_container).remove();
-	        			}
-	        			return false;
-	        			
-	        		});;
-		    		
-    			}
-    		
-	        }
-    		
-    		if($('li',suggested_tags).length==0) {
-				$(suggested_tags_container).remove();
-			}
-    	 }
-    	
+        li_data = settings.suggestedTags;
+        if(li_data && li_data.length) {
+
+            for(var i in li_data) {
+
+                suggestedTag = li_data[i].name;
+                if($('li p', token_list).filter(":contains('" + suggestedTag + "')").length==0) {
+
+                    /*size adjust will increase/decrease tag size*/
+                    var sizeAdjust = 0;
+                    if(typeof(li_data[i].size) != 'undefined') {
+                        sizeAdjust = li_data[i].size;
+                    }
+
+                    var this_token = $('<li><a href="#" style="font-size: ' + (settings.defaultSuggestTagSize+sizeAdjust) + settings.defaultSuggestTagSizeUnit + '">'+suggestedTag+'</a></li>')
+                    .addClass(settings.classes.suggestedTag)
+                    .appendTo(suggested_tags)
+                    .click(function() {
+
+                        var li = this;
+                        add_new_token($('a', li).text());
+                        $(li).remove();
+
+                        //Should the whole ul be removed?
+                        if($('li',suggested_tags).length==0) {
+                            $(suggested_tags_container).remove();
+                        }
+                        return false;
+
+                    });;
+
+                }
+
+            }
+
+            if($('li',suggested_tags).length==0) {
+                $(suggested_tags_container).remove();
+            }
+         }
+
     }
 
     function is_printable_character(keycode) {
@@ -469,8 +469,8 @@ $.TokenList = function (input, settings) {
 
     // Add a token to the token list based on user input
     function add_existing_token (item) {
-        
-    	var li_data = $.data(item.get(0), "tokeninput");
+
+        var li_data = $.data(item.get(0), "tokeninput");
         var this_token = insert_token(li_data.id, li_data.name);
 
         // Clear input box and make sure it keeps focus
@@ -495,11 +495,11 @@ $.TokenList = function (input, settings) {
     
     //Added TH - This is for adding a token that doesn't exist in the list. Could do with drying this up because it's very similar to add_existing_token.
     function add_new_token (label) {
-    	
-    	if($.trim(label) == '') {
-    		return false;
-    	}
-    	
+
+        if($.trim(label) == '') {
+            return false;
+        }
+
         var this_token = insert_token(label, label);
 
         // Clear input box and make sure it keeps focus
@@ -617,9 +617,9 @@ $.TokenList = function (input, settings) {
     }
 
     // Highlight the query part of the search term
-	function highlight_term(value, term) {
-		return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<b>$1</b>");
-	}
+    function highlight_term(value, term) {
+        return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<b>$1</b>");
+    }
 
     // Populate the results dropdown with some results
     function populate_dropdown (query, results) {
@@ -713,41 +713,41 @@ $.TokenList = function (input, settings) {
 
     // Do the actual search
     function run_search(query) {
-        
-    	if(query=='') {
-    		hide_dropdown();
-    		return false;
-    	}
-    	
-    	var cached_results = cache.get(query);
+
+        if(query=='') {
+            hide_dropdown();
+            return false;
+        }
+
+        var cached_results = cache.get(query);
         if(cached_results) {
             populate_dropdown(query, cached_results);
         } else {
-			var queryStringDelimiter = settings.url.indexOf("?") < 0 ? "?" : "&";
-			var callback = function(results) {
-			  if($.isFunction(settings.onResult)) {
-			      results = settings.onResult.call(this, results);
-			  }
+            var queryStringDelimiter = settings.url.indexOf("?") < 0 ? "?" : "&";
+            var callback = function(results) {
+              if($.isFunction(settings.onResult)) {
+                  results = settings.onResult.call(this, results);
+              }
               cache.add(query, settings.jsonContainer ? results[settings.jsonContainer] : results);
               populate_dropdown(query, settings.jsonContainer ? results[settings.jsonContainer] : results);
             
               //TH - added to make sure we don't show results if there was no query. This can happen due to a race condition inserting tockens.
               if($.trim(input_box.val()) == '') {
-            	  hide_dropdown();
+                  hide_dropdown();
               }
-              
-			};
-        
+
+            };
+
         if(settings.useClientSideSearch) {
           callback(search_client_side_data(query));
         } else if( settings.method == "POST" ) {
-			    $.post(settings.url + queryStringDelimiter + settings.queryParam + "=" + query, {}, callback, settings.contentType);
-		    } else {
-		      $.get(settings.url + queryStringDelimiter + settings.queryParam + "=" + query, {}, callback, settings.contentType);
-		    }
+                $.post(settings.url + queryStringDelimiter + settings.queryParam + "=" + query, {}, callback, settings.contentType);
+            } else {
+              $.get(settings.url + queryStringDelimiter + settings.queryParam + "=" + query, {}, callback, settings.contentType);
+            }
         }
     }
-    
+
     function prepare_client_side_data(results) {
       client_side_data = [];
       $.each(results, function(i,res){
@@ -762,7 +762,7 @@ $.TokenList = function (input, settings) {
       $.each(client_side_data, function(i,data) {
         if(data.searchable_string.indexOf(query) != -1) {
           results.push(data);
-      	}
+        }
       });
       return results;
     }
