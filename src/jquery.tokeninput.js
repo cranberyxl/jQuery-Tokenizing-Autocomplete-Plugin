@@ -36,7 +36,8 @@ $.fn.tokenInput = function (url, options) {
         afterAdd: function() {},
         useClientSideSearch: false,
         tokenDelimiter: ',',
-        arrowThroughTags: true
+        arrowThroughTags: true,
+        position: {}
     }, options);
 
     settings.classes = $.extend({
@@ -604,12 +605,13 @@ $.TokenList = function (input, settings) {
     }
 
     function show_dropdown () {
-        dropdown.show().position({
+        dropdown.show().position($.extend({
             my: "left top",
             at: "left bottom",
             of: token_list,
             collision: "none"
-        });
+        }, settings.position));
+        dropdown.width(token_list.width());
     }
 
     function show_dropdown_searching () {
