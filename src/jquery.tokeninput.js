@@ -38,6 +38,7 @@ $.fn.tokenInput = function (url, options) {
         tokenDelimiter: ',',
         arrowThroughTags: true,
         allowDuplicates: true,
+        normalizeInput: false,
         position: {}
     }, options);
 
@@ -446,6 +447,11 @@ $.TokenList = function (input, settings) {
     function insert_token(id, value) {
         //TH - added to prevent search getting triggered unnecessarily.
         clearTimeout(timeout);
+
+        if (settings.normalizeInput) {
+            id = id.toLowerCase();
+            value = value.toLowerCase();
+        }
 
         if (settings.allowDuplicates || $.inArray(id,hidden_input.val().split(settings.tokenDelimiter)) === -1) {
             var this_token = $("<li><em class = \"" + settings.classes.label + "\">"+ value +"</em> </li>")
