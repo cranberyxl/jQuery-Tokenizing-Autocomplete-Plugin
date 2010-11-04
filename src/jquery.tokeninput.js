@@ -37,6 +37,7 @@ $.fn.tokenInput = function (url, options) {
         useClientSideSearch: false,
         tokenDelimiter: ',',
         arrowThroughTags: true,
+        allowDuplicates: true,
         position: {}
     }, options);
 
@@ -443,27 +444,29 @@ $.TokenList = function (input, settings) {
 
     // Inner function to a token to the list
     function insert_token(id, value) {
-      var this_token = $("<li><em class=\"" + settings.classes.label + "\">"+ value +"</em> </li>")
-      .addClass(settings.classes.token)
-      .insertBefore(input_token);
+        //TH - added to prevent search getting triggered unnecessarily.
+        clearTimeout(timeout);
 
-      //TH - added to prevent search getting triggered unnecessarily.
-      clearTimeout(timeout);
-      
-      // The 'delete token' button
-      $("<span>x</span>")
-          .addClass(settings.classes.tokenDelete)
-          .appendTo(this_token.find('em'))
-          .click(function () {
-              delete_token($(this).parents('li'));
-              return false;
-          });
+        if (settings.allowDuplicates || $.inArray(id,hidden_input.val().split(settings.tokenDelimiter)) === -1) {
+            var this_token = $("<li><em class = \"" + settings.classes.label + "\">"+ value +"</em> </li>")
+                .addClass(settings.classes.token)
+                .insertBefore(input_token);
 
-      $.data(this_token.get(0), "tokeninput", {"id": id, "name": value});
+            // The 'delete token' button
+            $("<span>x</span>")
+                .addClass(settings.classes.tokenDelete)
+                .appendTo(this_token.find('em'))
+                .click(function () {
+                    delete_token($(this).parents('li'));
+                    return false;
+                });
 
-      settings.afterAdd.call(this);
-      
-      return this_token;
+            $.data(this_token.get(0), "tokeninput", {"id": id, "name": value});
+
+            settings.afterAdd.call(this);
+
+            return this_token;
+        }
     }
 
     // Add a token to the token list based on user input
