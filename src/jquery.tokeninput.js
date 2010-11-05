@@ -33,7 +33,7 @@ $.fn.tokenInput = function (url, options) {
         suggestedTagsText: "Suggested tags:",
         defaultSuggestTagSize: 14,
         defaultSuggestTagSizeUnit: 'px',
-        afterAdd: function() {},
+        afterChange: function() {},
         useClientSideSearch: false,
         tokenDelimiter: ',',
         arrowThroughTags: true,
@@ -347,19 +347,7 @@ $.TokenList = function (input, settings) {
         
         if(li_data && li_data.length) {
             for(var i in li_data) {
-                var this_token = $("<li><em class=\"" + settings.classes.label + "\">"+li_data[i].name+"</em> </li>")
-                    .addClass(settings.classes.token)
-                    .insertBefore(input_token);
-
-                $("<span>x</span>")
-                    .addClass(settings.classes.tokenDelete)
-                    .appendTo(this_token.find('em'))
-                    .click(function () {
-                        delete_token($(this).parents('li'));
-                        return false;
-                    });
-
-                $.data(this_token.get(0), "tokeninput", {"id": li_data[i].id, "name": li_data[i].name});
+                insert_token(li_data[i].id, li_data[i].name);
 
                 // Clear input box and make sure it keeps focus
                 input_box
@@ -469,7 +457,7 @@ $.TokenList = function (input, settings) {
 
             $.data(this_token.get(0), "tokeninput", {"id": id, "name": value});
 
-            settings.afterAdd.call(this);
+            settings.afterChange.call(this, token_list, hidden_input);
 
             return this_token;
         }
@@ -572,9 +560,11 @@ $.TokenList = function (input, settings) {
 
         // Show the input box and give it focus again
         input_box.focus();
-        
+
         update_hidden_input();
-        
+
+        settings.afterChange.call(this, token_list, hidden_input);
+
         if (settings.tokenLimit != null && token_count < settings.tokenLimit) {
             input_box
                 .show()
